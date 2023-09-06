@@ -98,8 +98,11 @@ void MainWindow::loadCamera(const QCameraDevice& device)
     m_captureSession.setCamera(m_camera.data());
     m_captureSession.setVideoOutput(m_videoItem);
 
+    qDebug() << Q_FUNC_INFO << "Initial format:";
+    printCameraFormat(m_camera->cameraFormat());
+
     if (m_camera->cameraFormat().isNull()) {
-        qDebug() << "Setting format.";
+        qDebug() << Q_FUNC_INFO << "Setting format...";
 
         auto formats = device.videoFormats();
         if (!formats.isEmpty())
@@ -121,11 +124,22 @@ void MainWindow::loadCamera(const QCameraDevice& device)
         }
         else
         {
-            qDebug() << "No formats available.";
+            qDebug() << Q_FUNC_INFO << "No formats available.";
         }
     }
 
+    qDebug() << Q_FUNC_INFO << "Final format:";
+    printCameraFormat(m_camera->cameraFormat());
+
     m_camera->start();
+}
+
+void MainWindow::printCameraFormat(const QCameraFormat& format)
+{
+    qDebug() << Q_FUNC_INFO << "Pixel format: " << m_camera->cameraFormat().pixelFormat();
+    qDebug() << Q_FUNC_INFO << "Max Framerate: " << m_camera->cameraFormat().maxFrameRate();
+    qDebug() << Q_FUNC_INFO << "Min Framerate: " << m_camera->cameraFormat().minFrameRate();
+    qDebug() << Q_FUNC_INFO << "Resolution: " << m_camera->cameraFormat().resolution();
 }
 
 void MainWindow::on_refreshButton_clicked()
@@ -133,9 +147,9 @@ void MainWindow::on_refreshButton_clicked()
     updateCameraList();
 }
 
-
-void MainWindow::on_camListWidget_currentRowChanged(int currentRow)
+void MainWindow::on_camListWidget_itemSelectionChanged()
 {
+    int currentRow = ui->camListWidget->currentRow();
     if (currentRow > -1) {
         qDebug() << "Loading " << currentRow;
         loadCamera(m_availableCams.at(currentRow));

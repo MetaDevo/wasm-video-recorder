@@ -12,6 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    message("Building for WebAssembly")
+    add_definitions(-D USE_PERMISSIONS=1)
+endif()
+
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp

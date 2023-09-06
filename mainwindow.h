@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-//#define USE_PERMISSIONS
-
 #include <QMainWindow>
 #include <QAudioDevice>
 #include <QCameraDevice>
@@ -13,6 +11,7 @@ class QCamera;
 class QGraphicsVideoItem;
 class VideoScene;
 class QPermission;
+class QListWidgetItem;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,9 +33,10 @@ private slots:
     void updateCameraList();
     void loadCamera(const QCameraDevice& device);
 
-    void on_camListWidget_currentRowChanged(int currentRow);
+    void on_camListWidget_itemSelectionChanged();
 
 private:
+    void printCameraFormat(const QCameraFormat& format);
 
     Ui::MainWindow* ui;
     VideoScene* m_scene;
