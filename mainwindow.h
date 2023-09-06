@@ -46,6 +46,6 @@ private:
     QList<QCameraDevice> m_availableCams;
     QList<QAudioDevice> m_availableMics;
     QScopedPointer<QCamera> m_camera;
-    QMediaCaptureSession m_captureSession;
+    //QMediaCaptureSession m_captureSession;
 };
 #endif // MAINWINDOW_H

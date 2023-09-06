@@ -21,11 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 #ifdef USE_PERMISSIONS
-    QCameraPermission camPermission;
-    switch (qApp->checkPermission(camPermission)) {
+    //QCameraPermission camPermission;
+    switch (qApp->checkPermission(QCameraPermission{})) {
     case Qt::PermissionStatus::Undetermined:
         qDebug() << "Undetermined";
-        qApp->requestPermission(camPermission, this, &MainWindow::permissionsChanged);
+        qApp->requestPermission(QCameraPermission{}, this, &MainWindow::permissionsChanged);
         break;
     case Qt::PermissionStatus::Denied:
         qDebug() << "Denied";
@@ -71,9 +71,9 @@ void MainWindow::permissionsChanged(const QPermission& permission)
 void MainWindow::updateCameraList()
 {
     m_availableCams = QMediaDevices::videoInputs();
-    m_availableMics = QMediaDevices::audioInputs();
+    //m_availableMics = QMediaDevices::audioInputs();
     qDebug() << Q_FUNC_INFO << "Num cams: " << m_availableCams.size();
-    qDebug() << Q_FUNC_INFO << "Num mics: " << m_availableMics.size();
+    //qDebug() << Q_FUNC_INFO << "Num mics: " << m_availableMics.size();
 
     ui->camListWidget->clear();
     int i = 0;
@@ -81,22 +81,21 @@ void MainWindow::updateCameraList()
         qDebug() << "Cam " << ++i << cameraDevice.description();
         QString desc = cameraDevice.description();
         if (desc.isEmpty()) {
+            qDebug() << "ID: " << cameraDevice.id();
             desc = "camera " + QString::number(i);
+            if (cameraDevice.isNull()) {
+                qDebug() << desc << "is null.";
+            }
         }
         ui->camListWidget->addItem(desc);
-
-//        if (cameraDevice == QMediaDevices::defaultVideoInput()) {
-//            qDebug() << "Loading " << desc;
-//            loadCamera(cameraDevice);
-//        }
     }
 }
 
 void MainWindow::loadCamera(const QCameraDevice& device)
 {
     m_camera.reset(new QCamera(device));
-    m_captureSession.setCamera(m_camera.data());
-    m_captureSession.setVideoOutput(m_videoItem);
+    //m_captureSession.setCamera(m_camera.data());
+    //m_captureSession.setVideoOutput(m_videoItem);
 
     qDebug() << Q_FUNC_INFO << "Initial format:";
     printCameraFormat(m_camera->cameraFormat());
@@ -118,15 +117,16 @@ void MainWindow::loadCamera(const QCameraDevice& device)
                     bestFormat = fmt;
                 }
             }
-
             m_camera->setCameraFormat(bestFormat);
-            //m_mediaRecorder->setVideoFrameRate(bestFormat.maxFrameRate());
         }
         else
         {
             qDebug() << Q_FUNC_INFO << "No formats available.";
         }
     }
+
+
+    //m_mediaRecorder->setVideoFrameRate(bestFormat.maxFrameRate());
 
     qDebug() << Q_FUNC_INFO << "Final format:";
     printCameraFormat(m_camera->cameraFormat());
