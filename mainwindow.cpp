@@ -151,7 +151,7 @@ void MainWindow::on_camListWidget_itemSelectionChanged()
 {
     int currentRow = ui->camListWidget->currentRow();
     if (currentRow > -1) {
-        qDebug() << "Loading " << currentRow;
+        qDebug() << "Loading cam " << currentRow + 1;
         loadCamera(m_availableCams.at(currentRow));
     }
 }
